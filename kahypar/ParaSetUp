@@ -1,0 +1,275 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
++                    _  __     _   _       ____                               + 
++                   | |/ /__ _| | | |_   _|  _ \ __ _ _ __                    + 
++                   | ' // _` | |_| | | | | |_) / _` | '__|                   + 
++                   | . \ (_| |  _  | |_| |  __/ (_| | |                      + 
++                   |_|\_\__,_|_| |_|\__, |_|   \__,_|_|                      + 
++                                    |___/                                    + 
++                 Karlsruhe Hypergraph Partitioning Framework                 + 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+
+Generic Options:
+  --help                                show help message
+  -v [ --verbose ] <bool>               Verbose main partitioning output
+  --vip <bool>                          Verbose initial partitioning output
+  -q [ --quiet ] <bool>                 Quiet Mode: Completely suppress console output
+  --time-limit <int>                    Time limit in seconds
+  -s [ --sp-process ] <bool>            Summarize partitioning results in RESULT line compatible with sqlplottools (https://github.com/bingmann/sqlplottools)
+
+Required Options:
+  -h [ --hypergraph ] <string>          Hypergraph filename
+  -k [ --blocks ] <int>                 Number of blocks
+  -e [ --epsilon ] <double>             Imbalance parameter epsilon
+
+Preset Options:
+  -p [ --preset ] <string>              Context Presets (see config directory):
+                                         - km1_direct_kway_sea18.ini
+                                         - km1_direct_kway_sea17.ini
+                                         - direct_kway_km1_alenex17.ini
+                                         - rb_cut_alenex16.ini
+                                         - <path-to-custom-ini-file>
+
+General Options:
+  --seed <int>                          Seed for random number generator 
+                                        (default: -1)
+  -f [ --fixed-vertices ] <string>      Fixed vertex filename
+  --part-file <string>                  Input Partition filename. The input partition is then refined using direct k-way V-cycles.
+  --cmaxnet <int>                       Hyperedges larger than cmaxnet are ignored during partitioning process.
+  --vcycles <uint32_t>                  # V-cycle iterations for direct k-way partitioning
+  --use-individual-part-weights <bool>  # Use individual part weights specified with --partweights= option
+  --part-weights arg                    Individual target part weights
+  -o [ --objective ] <string>           Objective: 
+                                         - cut : cut-net metric 
+                                         - km1 : (lambda-1) metric
+  -m [ --mode ] <string>                Partitioning mode: 
+                                         - (recursive) bisection 
+                                         - (direct) k-way
+
+Preprocessing Options:
+  --p-use-sparsifier <bool>             Use min-hash pin sparsifier before partitioning
+  --p-sparsifier-min-median-he-size <int>
+                                        Minimum median hyperedge size necessary for sparsifier application
+  --p-sparsifier-max-hyperedge-size <int>
+                                        Max hyperedge size allowed considered by sparsifier
+  --p-sparsifier-max-cluster-size <int> Max cluster size which is built by sparsifier
+  --p-sparsifier-min-cluster-size <int> Min cluster size which is built by sparsifier
+  --p-sparsifier-num-hash-func <int>    Number of hash functions
+  --p-sparsifier-combined-num-hash-func <int>
+                                        Number of combined hash functions
+  --p-detect-communities <bool>         Using louvain community detection for coarsening
+  --p-detect-communities-in-ip <bool>   Using louvain community detection for coarsening during initial partitioning
+  --p-max-louvain-pass-iterations <uint32_t>
+                                        Maximum number of iterations over all nodes of one louvain pass
+  --p-min-eps-improvement <long double> Minimum improvement of quality during a louvain pass which leads to further passes
+  --p-louvain-edge-weight <string>      Weights:
+                                         - hybrid 
+                                         - uniform
+                                         - non_uniform
+                                         - degree
+  --p-reuse-communities <bool>          Reuse the community structure identified in the first bisection for all other bisections.
+
+Coarsening Options:
+  --c-type <string>                     Algorithm:
+                                         - ml_style
+                                         - heavy_full
+                                         - heavy_lazy
+  --c-s <double>                        The maximum weight of a vertex in the coarsest hypergraph H is:
+                                        (s * w(H)) / (t * k)
+                                        
+  --c-t <int>                           Coarsening stops when there are no more than t * k hypernodes left
+  --c-rating-score <string>             Rating function used to calculate scores for vertex pairs:
+                                        heavy_edge edge_frequency
+  --c-rating-use-communities <bool>     Use community information during rating. If c-rating-use-communities=true ,
+                                        only neighbors belonging to the same community will be considered as contraction partner.
+  --c-rating-heavy_node_penalty <string>
+                                        Penalty function to discourage heavy vertices:
+                                        multiplicative no_penalty
+  --c-rating-acceptance-criterion <string>
+                                        Acceptance/Tiebreaking criterion for contraction partners having the same score:
+                                        random prefer_unmatched
+  --c-fixed-vertex-acceptance-criterion <string>
+                                        Acceptance criterion for fixed vertex contractions:
+                                        - free_vertex_only     : Allows (free, free) and (fixed, free)
+                                        - fixed_vertex_allowed : Allows (free, free), (fixed, free), and (fixed, fixed) 
+                                        - equivalent_vertices  : Allows (free, free), (fixed, fixed)
+
+Initial Partitioning Options:
+  --i-mode <string>                     IP mode: 
+                                         - (recursive) bisection  
+                                         - (direct) k-way
+  --i-technique <string>                IP Technique:
+                                         - flat
+                                         - (multi)level
+  --i-algo <string>                     Algorithm used to create initial partition: pool 
+  --i-runs <uint32_t>                   # initial partition trials
+
+Initial Partitioning Coarsening Options:
+  --i-c-type <string>                   Algorithm:
+                                         - ml_style
+                                         - heavy_full
+                                         - heavy_lazy
+  --i-c-s <double>                      The maximum weight of a vertex in the coarsest hypergraph H is:
+                                        (s * w(H)) / (t * k)
+                                        
+  --i-c-t <int>                         Coarsening stops when there are no more than t * k hypernodes left
+  --i-c-rating-score <string>           Rating function used to calculate scores for vertex pairs:
+                                        heavy_edge edge_frequency
+  --i-c-rating-use-communities <bool>   Use community information during rating. If c-rating-use-communities=true ,
+                                        only neighbors belonging to the same community will be considered as contraction partner.
+  --i-c-rating-heavy_node_penalty <string>
+                                        Penalty function to discourage heavy vertices:
+                                        multiplicative no_penalty
+  --i-c-rating-acceptance-criterion <string>
+                                        Acceptance/Tiebreaking criterion for contraction partners having the same score:
+                                        random prefer_unmatched
+  --i-c-fixed-vertex-acceptance-criterion <string>
+                                        Acceptance criterion for fixed vertex contractions:
+                                        - free_vertex_only     : Allows (free, free) and (fixed, free)
+                                        - fixed_vertex_allowed : Allows (free, free), (fixed, free), and (fixed, fixed) 
+                                        - equivalent_vertices  : Allows (free, free), (fixed, fixed)
+
+Initial Partitioning Refinement Options:
+  --i-r-type <string>                   Local Search Algorithm:
+                                         - twoway_fm        : 2-way FM algorithm        (recursive bisection: cut & km1)
+                                         - twoway_flow      : 2-way Flow algorithm      (recursive bisection: cut & km1)
+                                         - twoway_fm_flow   : 2-way FM + Flow algorithm (recursive bisection: cut & km1)
+                                         - kway_fm          : k-way FM algorithm        (direct k-way       : cut)
+                                         - kway_fm_flow     : k-way FM + Flow algorithm (direct k-way       : cut)
+                                         - kway_fm_km1      : k-way FM algorithm        (direct k-way       : km1)
+                                         - kway_fm_flow_km1 : k-way FM + Flow algorithm (direct k-way       : km1)
+                                         - kway_flow        : k-way Flow algorithm      (direct k-way       : cut & km1)
+  --i-r-runs <int>                      Max. # local search repetitions on each level
+                                        (no limit:-1)
+  --i-r-fm-stop <string>                Stopping Rule for Local Search: 
+                                         - adaptive_opt: ALENEX'17 adaptive stopping rule 
+                                         - simple:       ALENEX'16 threshold based on r-fm-stop-i
+  --i-r-fm-stop-i <uint32_t>            Max. # fruitless moves before stopping local search using simple stopping rule
+  --i-r-fm-stop-alpha <double>          Parameter alpha for adaptive stopping rule 
+                                        (infinity: -1)
+
+Initial Partitioning Flow Refinement Options:
+  --i-r-flow-algorithm <string>         Flow Algorithms:
+                                         - edmond_karp       : Edmond-Karp Max-Flow algorithm
+                                         - goldberg_tarjan   : GoldbergTarjan Max-Flow algorithm
+                                         - boykov_kolmogorov : Boykov-Kolmogorov Max-Flow algorithm
+                                         - ibfs              : IBFS Max-Flow algorithm
+                                        (default: ibfs)
+  --i-r-flow-network <string>           Flow Networks:
+                                         - lawler : Lawler Network
+                                         - heuer  : Heuer Network (Removes all hypernodes with d(v) <= 3)
+                                         - wong   : Wong Network (Model each HE with |e| = 2 as graph edge)
+                                         - hybrid : Hybrid Network (Combination of Heuer + Wong Network)
+                                        (default: hybrid)
+  --i-r-flow-execution-policy <string>  Flow Execution Modes:
+                                         - constant    : Execute flows in each level i with i = beta * j (j \in {1,2,...})
+                                         - exponential : Execute flows in each level i with i = 2^j (j \in {1,2,...})
+                                         - multilevel  : Execute flows in each level i with i = |V|/2^j (j \in {1,2,...})
+                                        (default: exponential)
+  --i-r-flow-alpha <double>             Determine maximum size of a flow problem during adaptive flow iterations (epsilon' = alpha * epsilon) 
+                                        (default: 16.0)
+  --i-r-flow-beta <size_t>              Beta of CONSTANT flow execution policy 
+                                        (default: 128)
+  --i-r-flow-use-most-balanced-minimum-cut <bool>
+                                        Heuristic to balance a min-cut bipartition after a maximum flow computation 
+                                        (default: true)
+  --i-r-flow-use-adaptive-alpha-stopping-rule <bool>
+                                        Stop adaptive flow iterations, when cut equal to old cut 
+                                        (default: true)
+  --i-r-flow-ignore-small-hyperedge-cut <bool>
+                                        If cut is small between two blocks, don't use flow refinement 
+                                        (default: true)
+  --i-r-flow-use-improvement-history <bool>
+                                        Decides if flow-based refinement is used between two adjacent blocks based on improvement history of the corresponding blocks 
+                                        (default: true)
+
+Refinement Options:
+  --r-type <string>                     Local Search Algorithm:
+                                         - twoway_fm        : 2-way FM algorithm        (recursive bisection: cut & km1)
+                                         - twoway_flow      : 2-way Flow algorithm      (recursive bisection: cut & km1)
+                                         - twoway_fm_flow   : 2-way FM + Flow algorithm (recursive bisection: cut & km1)
+                                         - kway_fm          : k-way FM algorithm        (direct k-way       : cut)
+                                         - kway_fm_flow     : k-way FM + Flow algorithm (direct k-way       : cut)
+                                         - kway_fm_km1      : k-way FM algorithm        (direct k-way       : km1)
+                                         - kway_fm_flow_km1 : k-way FM + Flow algorithm (direct k-way       : km1)
+                                         - kway_flow        : k-way Flow algorithm      (direct k-way       : cut & km1)
+  --r-runs <int>                        Max. # local search repetitions on each level
+                                        (no limit:-1)
+  --r-fm-stop <string>                  Stopping Rule for Local Search: 
+                                         - adaptive_opt: ALENEX'17 adaptive stopping rule 
+                                         - simple:       ALENEX'16 threshold based on r-fm-stop-i
+  --r-fm-stop-i <uint32_t>              Max. # fruitless moves before stopping local search using simple stopping rule
+  --r-fm-stop-alpha <double>            Parameter alpha for adaptive stopping rule 
+                                        (infinity: -1)
+
+Flow Refinement Options:
+  --r-flow-algorithm <string>           Flow Algorithms:
+                                         - edmond_karp       : Edmond-Karp Max-Flow algorithm
+                                         - goldberg_tarjan   : GoldbergTarjan Max-Flow algorithm
+                                         - boykov_kolmogorov : Boykov-Kolmogorov Max-Flow algorithm
+                                         - ibfs              : IBFS Max-Flow algorithm
+                                        (default: ibfs)
+  --r-flow-network <string>             Flow Networks:
+                                         - lawler : Lawler Network
+                                         - heuer  : Heuer Network (Removes all hypernodes with d(v) <= 3)
+                                         - wong   : Wong Network (Model each HE with |e| = 2 as graph edge)
+                                         - hybrid : Hybrid Network (Combination of Heuer + Wong Network)
+                                        (default: hybrid)
+  --r-flow-execution-policy <string>    Flow Execution Modes:
+                                         - constant    : Execute flows in each level i with i = beta * j (j \in {1,2,...})
+                                         - exponential : Execute flows in each level i with i = 2^j (j \in {1,2,...})
+                                         - multilevel  : Execute flows in each level i with i = |V|/2^j (j \in {1,2,...})
+                                        (default: exponential)
+  --r-flow-alpha <double>               Determine maximum size of a flow problem during adaptive flow iterations (epsilon' = alpha * epsilon) 
+                                        (default: 16.0)
+  --r-flow-beta <size_t>                Beta of CONSTANT flow execution policy 
+                                        (default: 128)
+  --r-flow-use-most-balanced-minimum-cut <bool>
+                                        Heuristic to balance a min-cut bipartition after a maximum flow computation 
+                                        (default: true)
+  --r-flow-use-adaptive-alpha-stopping-rule <bool>
+                                        Stop adaptive flow iterations, when cut equal to old cut 
+                                        (default: true)
+  --r-flow-ignore-small-hyperedge-cut <bool>
+                                        If cut is small between two blocks, don't use flow refinement 
+                                        (default: true)
+  --r-flow-use-improvement-history <bool>
+                                        Decides if flow-based refinement is used between two adjacent blocks based on improvement history of the corresponding blocks 
+                                        (default: true)
+
+Evolutionary Options:
+  --partition-evolutionary <bool>       Use memetic algorithm for partitioning
+  --population-size <size_t>            Population Size for Evolutionary Partitioning
+                                        (default 10)
+  --gamma <double>                      The dampening factor for edge frequency
+                                        (default 0.5)
+  --replace-strategy <string>           Replacement Strategy for Population Management
+                                        - worst: new partitions replace the current worst partition in the population
+                                        - diverse: new partitions replace the most similar partition based on cut difference
+                                        - strong-diverse: new partitions replace the most similar partition based on connectivity difference
+                                        (for diverse/strong-diverse better partitions are not considered for replacement)
+                                        (default: strong-diverse)
+  --combine-strategy <string>           Combine Strategy to be used for a regular combine operation
+                                        - basic: takes two partitions and contracts nodes u & v only if they are in the same block for both partitions 
+                                        - with-edge-frequency: similar to basic, but the edge frequency information of the best "edge_frequency_amount" partitions is added top the rating
+                                        - edge-frequency: creating a new partition under consideration of the "edge_frequency_amount" best partitions for edge frequency
+                                        (default: basic)
+  --mutate-strategy <string>            Mutation Strategy for the mutation operation 
+                                        - new-initial-partitioning-vcycle: coarsening of a partition with completely new initial partitioning
+                                        - vcycle: a regular vcycle on an existing partition
+                                        (default: new-initial-partitioning-vcycle)
+  --diversify-interval <int>            The Frequency in which diversfication should be performed
+                                        (default: -1)(-1 disables)
+  --random-vcycles <bool>               Whether vcycle mutations should be randomized
+  --dynamic-population-size <bool>      Whether the population size should be determined by runtime
+                                        default: on)
+  --dynamic-population-time <float>     The amount of total runtime allocated for initial population
+                                        default: 0.15)
+  --random-combine <bool>               Whether random combines should be picked
+                                        default: off)
+  --unlimited-coarsening <bool>         Whether combine operations should not be limited in contraction
+                                        default: on)
+  --mutate-chance <float>               The Chance of a mutation being selected as operation
+                                        default: 0.5)
+  --edge-frequency-chance <float>       The Chance of a mutation being selected as operation
+                                        default: 0.5)
+ 
