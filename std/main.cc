@@ -18,9 +18,14 @@ int main(){
             iter++;
         }
     }
-    for(size_t i = 0;i < vec.size();i++)
-        cout << vec[i] << "\t";
-
+    double *arr = new double[10];
+    for(size_t i = 0;i < 10;i++)
+        arr[i] = i;
+    vector< double > vec1(arr,arr+10);
+    for(size_t i = 0;i < vec1.size();i++)
+        cout << vec1[i] << "\t";
+    cout << endl;
+    delete [] arr;
     return 0;
 
 }
